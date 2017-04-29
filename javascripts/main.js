@@ -52,6 +52,16 @@ $(document).ready(function() {
 
 
 	//complete todos
+	$('.main-container').on('click', 'input[type="checkbox"]', (event) => {
+		console.log("event", event.target.id);
+		FbApi.checker(event.target.id).then(() => {
+			FbApi.writeDom();
+			countTask();
+		}).catch((error) => {
+			console.log("checker error", error);
+		});
+	});
+
 
 	let countTask = () => {
 		let remainingTask = $('#incomplete-tasks li').length;

@@ -10,7 +10,12 @@ var FbApi = (() => {
 		},
 		setSingleTodo: (newObject) => {
 			todos.push(newObject);
-		}	
+		},	
+		setChecked: (itemid) => {
+			const position = itemid.split("item")[1]; // ['', 0]
+			todos[position].isCompleted = !todos[position].isCompleted;
+
+		}
 	};
 
 })(FbApi || {});
