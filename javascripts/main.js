@@ -1,2 +1,2 @@
-console.log("I'm totally working.")
+console.log("I'm totally working.");
 alert('JS Ready');
