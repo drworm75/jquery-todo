@@ -4,7 +4,7 @@ var FbApi = ((otherOldCrap) => {
 		let todos = FbApi.todoGetter();
 		let doneString = "";
 		let notDoneString = "";
-		console.log("todos In Write to Dom",todos)
+		console.log("todos In Write to Dom",todos);
 
 			todos.forEach((todo) => {
 		      if (todo.isCompleted) {
@@ -34,7 +34,7 @@ var FbApi = ((otherOldCrap) => {
 
 		$('#completed-tasks').html(doneString);
 		$('#incomplete-tasks').html(notDoneString);
-	}
+	};
 
 	return otherOldCrap;
 })(FbApi || {});
