@@ -37,6 +37,13 @@ var FbApi = ((oldCrap) => {
 		});
 	};
 
+	oldCrap.deleteTodo = (id) => {
+		return new Promise ((resolve, reject) => {
+			FbApi.duhlete(id);
+			resolve();
+		})
+	}
+
 
 	return oldCrap;
 })(FbApi || {});
