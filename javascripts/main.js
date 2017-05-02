@@ -1,4 +1,7 @@
-$(document).ready(function() {
+$(document).ready(function(){
+  let apiKeys;
+  let editId = "";
+
 	$('#new-item').click(() => {
 		$('.list-container').addClass('hide');
 		$('.new-container').removeClass('hide');
@@ -9,87 +12,87 @@ $(document).ready(function() {
 		$('.list-container').removeClass('hide');
 	});
 
-	FbApi.getTodos().then(() => {
-		FbApi.writeDom();
-		countTask();
+  FbApi.firebaseCredentials().then((keys) => {
+    apiKeys = keys;
+    firebase.initializeApp(apiKeys);
+    FbApi.writeDom(apiKeys);
+  }).catch((error) => {
+    console.log("key errors", error);
+  });
 
-	})
-	.catch((error) => {
-		console.log("getTodosError", error);
-	});
-
-	//add todo
-	$('#add-todo-button').click(() => {
-		let newTodo = {
-			isCompleted: false,
-			task: $('#add-todo-text').val()
-		};
-
-		console.log("newTodo",newTodo);
-		FbApi.addTodo(newTodo).then(() => {
-			console.log('called');
-			$('#add-todo-text').val("");
-			$('.new-container').addClass('hide');
-			$('.list-container').removeClass('hide');
-			FbApi.writeDom();
-			countTask();
-		}).catch((error) => {
-			console.log("addTodo error", error);
-		});
-	});
-
-
-
-
-	//delete todo
-
-	$('.main-container').on('click', '.delete', (event) => {
-		FbApi.deleteTodo(event.target.id).then(() => {
-			FbApi.writeDom();
-			countTask();
-		}).catch((error) => {
-			console.log("error in deleteTodo", error);
-		});
-	});
+  //add todo
+  $('#add-todo-button').click(() => {
+  	let newTodo = {
+  		isCompleted: false,
+  		task: $('#add-todo-text').val()
+  	};
+    if(editId.length > 0){
+      //edit
+      FbApi.editTodo(apiKeys, newTodo, editId).then(() => {
+        $('#add-todo-text').val("");
+        editId = "";
+        $('.new-container').addClass('hide');
+        $('.list-container').removeClass('hide');
+        FbApi.writeDom(apiKeys);
+      }).catch((error) => {
+        console.log("addTodo error", error);
+      });
+    } else{
+      FbApi.addTodo(apiKeys, newTodo).then(() => {
+        $('#add-todo-text').val("");
+        $('.new-container').addClass('hide');
+        $('.list-container').removeClass('hide');
+        FbApi.writeDom(apiKeys);
+      }).catch((error) => {
+        console.log("addTodo error", error);
+      });      
+    }
+  });
 
 
+  //delete todo
+  $('.main-container').on('click', '.delete', (event) => {
+    FbApi.deleteTodo(apiKeys, event.target.id).then(() => {
+      FbApi.writeDom(apiKeys);
+    }).catch((error) => {
+      console.log("error in deleteTodo", error);
+    });
+  });
 
 
-	//edit todo 
-
-	$('.main-container').on('click', '.edit', (event) => {
-		let editText = $(event.target).closest('.col-xs-4').siblings('.col-xs-8').find('.task').html();
-		FbApi.editTodo(event.target.id).then(() => {
-		$('.list-container').addClass('hide');
-		$('.new-container').removeClass('hide');
-		$('#add-todo-text').val(editText);
-		}).catch((error) => {
-			console.log("error in editTodo", error);
-		});
-	});
-
-		// FbApi.deleteTodo(event.target.id).then(() => {
+  //edit todo
+  $('.main-container').on('click', '.edit', (event) => {
+    let editText = $(event.target).closest('.col-xs-4').siblings('.col-xs-8').find('.task').html();
+    editId = event.target.id;
+    $('.list-container').addClass('hide');
+    $('.new-container').removeClass('hide');
+    $('#add-todo-text').val(editText);
+  });
 
 
 
 
+  //complete todos
+  $('.main-container').on('click', 'input[type="checkbox"]', (event)=>{
+  	let myTodo = {
+  		isCompleted: event.target.checked,
+  		task: $(event.target).siblings('.task').html()
+  	};
+  	FbApi.editTodo(apiKeys, myTodo, event.target.id).then(() => {
+  		FbApi.writeDom(apiKeys);
+  	}).catch((error) => {
+  		console.log("checker error", error);
+  	});
+  });
 
-	//complete todos
-	$('.main-container').on('click', 'input[type="checkbox"]', (event) => {
-		console.log("event", event.target.id);
-		FbApi.checker(event.target.id).then(() => {
-			FbApi.writeDom();
-			countTask();
-		}).catch((error) => {
-			console.log("checker error", error);
-		});
-	});
 
 
-	let countTask = () => {
-		let remainingTask = $('#incomplete-tasks li').length;
-		$('#counter').hide().fadeIn(3000).html(remainingTask);
-	};
 
-}); 
 
+
+
+
+
+
+
+});
