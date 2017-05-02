@@ -41,8 +41,15 @@ var FbApi = ((oldCrap) => {
 		return new Promise ((resolve, reject) => {
 			FbApi.duhlete(id);
 			resolve();
-		})
-	}
+		});
+	};
+
+	oldCrap.editTodo = (id) => {
+		return new Promise ((resolve, reject) => {
+			FbApi.duhlete(id);
+			resolve();
+		});
+	};
 
 
 	return oldCrap;
